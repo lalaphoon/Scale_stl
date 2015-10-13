@@ -1,5 +1,7 @@
 function  ScaleSTLACSII(filename,writefile,scale)
-% This function is written by http://blog.csdn.net/canye1984/article/details/7255916
+% This function was found from http://blog.csdn.net/canye1984/article/details/7255916
+% for loading data.
+% Instead, I made it to change the absolute scale of an object
 
 fid=fopen(filename, 'r');
 fiid = fopen(writefile, 'w');
@@ -38,16 +40,16 @@ while feof(fid) == 0                    % test for end of file, if not then do s
 %fword
 %Check for color
    
-if strncmpi(fword, 'facetnormal',11) == 1;    % Checking if a "C"olor line, as "C" is 1st char.
+if strncmpi(fword, 'facetnormal',11) == 1;    % check the lines starting with 'facet normal'
       
     
-    STLvcolor = sscanf(tline, '%*s %*s %f %f %f'); % & if a C, get the RGB color data of the face.   % we "*s" skip the name "color" and get the data.      
+    STLvcolor = sscanf(tline, '%*s %*s %f %f %f'); %  keep the same data   
 
 
        fprintf(fiid,'%s', '  facet normal ');
      
        fprintf(fiid,'%f %f %f\n',STLvcolor);
-end                                            % Keep this color, until the next color is used.
+end                                           
 
 %checking coordinaters
 if strncmpi(fword, 'vertex',6) == 1;    % Checking if a "V"ertex line, as "V" is 1st char.
@@ -62,7 +64,7 @@ end
 if strncmpi(fword,'outerloop',9)==1
     
     fprintf(fiid,'%s\n','    outer loop');
-    %fprintf(fiid,'%s\n')
+    %fprintf(fiid,'%s\n', tline) the optimization could just use tline instead.
 end
 if strncmpi(fword,'endloop',7)==1
     
@@ -98,9 +100,9 @@ fclose(fiid);
 
 
 %   Build face list; The vertices are in order, so just number them.
-fnum = vnum/3;      %Number of faces, vnum is number of vertices.  STL is triangles.
-flist = 1:vnum;     %Face list of vertices, all in order.
-F = reshape(flist, 3,fnum); %Make a "3 by fnum" matrix of face list data.
+%fnum = vnum/3;      %Number of faces, vnum is number of vertices.  STL is triangles.
+%flist = 1:vnum;     %Face list of vertices, all in order.
+%F = reshape(flist, 3,fnum); %Make a "3 by fnum" matrix of face list data.
 %
 %   Return the faces and vertexs.
 %
